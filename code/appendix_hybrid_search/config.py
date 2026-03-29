@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 # Path Configuration
 # =============================================================================
 
-PROJECT_ROOT = Path(__file__).parent.parent.parent
+PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 DATASET_ROOT = PROJECT_ROOT
 CHAPTER_ROOT = Path(__file__).parent
 
