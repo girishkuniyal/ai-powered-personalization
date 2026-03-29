@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 # =============================================================================
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent
-DATASET_ROOT = PROJECT_ROOT / "Dataset"
+DATASET_ROOT = PROJECT_ROOT
 CHAPTER_ROOT = Path(__file__).parent
 
 # Dataset path
