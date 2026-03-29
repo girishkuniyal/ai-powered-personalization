@@ -21,7 +21,7 @@ DATASET_ROOT = PROJECT_ROOT / "Dataset"
 CHAPTER_ROOT = Path(__file__).parent
 
 # Dataset path
-ESCI_DATA_PATH = DATASET_ROOT / "Amazon ESCI" / "shopping_queries_dataset"
+ESCI_DATA_PATH = DATASET_ROOT / "esci-data" / "shopping_queries_dataset"
 
 # Output paths
 OUTPUTS_DIR = CHAPTER_ROOT / "outputs"
