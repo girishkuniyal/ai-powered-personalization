@@ -1,0 +1,13 @@
+[project]
+name = "personapy"
+version = "0.1.0"
+description = "Your personalization library"
+authors = [{ name = "Shreesha Jagadeesh" }]
+dependencies = []
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
