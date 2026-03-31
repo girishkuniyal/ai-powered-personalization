@@ -3,7 +3,26 @@ name = "personapy"
 version = "0.1.0"
 description = "Your personalization library"
 authors = [{ name = "Shreesha Jagadeesh" }]
-dependencies = []
+dependencies = [
+    "click>=8.0",
+    "numpy>=1.21.0",
+    "pandas>=1.3.0",
+    "scipy>=1.7.0",
+    "scikit-learn>=1.0.0",
+    "bm25s[core]>=0.2.0",
+    "transformers>=4.30.0",
+    "torch>=2.0.0",
+    "sentence-transformers>=2.2.0",
+    "faiss-cpu>=1.7.0",
+    "pyarrow>=12.0.0",
+    "tqdm>=4.60.0",
+    "matplotlib>=3.5.0",
+    "seaborn>=0.11.0",
+    "pyyaml>=6.0",
+]
+
+[project.scripts]
+personapy = "personapy.cli:cli"
 
 [build-system]
 requires = ["setuptools", "wheel"]
@@ -11,3 +30,10 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["."]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "black>=22.0",
+    "isort>=5.0",
+]

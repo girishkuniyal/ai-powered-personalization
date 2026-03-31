@@ -1,0 +1,238 @@
+"""
+Default configuration for PersonaLity package.
+
+Copy this file to your project root as config.yaml and modify values as needed.
+If config.yaml is not present, these defaults will be used.
+
+All fields are documented with their valid values below.
+"""
+
+# =============================================================================
+# DATASET CONFIGURATION
+# =============================================================================
+
+dataset:
+  # Path to dataset root (relative to project root)
+  data_dir: "Dataset"
+  
+  # Dataset file names
+  examples_file: "shopping_queries_dataset_examples.parquet"
+  products_file: "shopping_queries_dataset_products.parquet"
+  
+  # Locale for dataset
+  # Valid values: "us", "uk", "de", "es", "fr", "it", "jp"
+  locale: "us"
+  
+  # Split to use
+  # Valid values: "train", "test"
+  split: "train"
+  
+  # Text template for product representation
+  # Available fields: {title}, {bullet_point}, {brand}, {color}, {description}
+  text_template: "{title}. {bullet_point}. Brand: {brand}"
+  
+  # Maximum number of queries to process (0 = use all ~97K queries)
+  max_queries: 5000
+  
+  # Maximum number of products to process (0 = use all ~1.2M products)
+  max_products: 0
+  
+  # Random seed for reproducibility
+  random_seed: 42
+
+
+# =============================================================================
+# BM25 CONFIGURATION
+# =============================================================================
+
+bm25:
+  # Enable/disable BM25 indexing
+  enabled: true
+  
+  # BM25 variant
+  # Valid values: "lucene", "robertson", "atire", "bm25l", "bm25+"
+  method: "lucene"
+  
+  # Term frequency saturation parameter (typical: 1.2-2.0)
+  # Higher values = more weight to term frequency
+  k1: 1.5
+  
+  # Document length normalization parameter (typical: 0.5-0.75)
+  # 0 = no normalization, 1 = full normalization
+  b: 0.75
+  
+  # Cache directory for BM25 index
+  cache_dir: "cache/bm25"
+
+
+# =============================================================================
+# DENSE SEARCH CONFIGURATION (SBERT + FAISS)
+# =============================================================================
+
+dense:
+  # Enable/disable dense search
+  enabled: true
+  
+  # Sentence-transformers model name
+  # Popular options:
+  #   - "sentence-transformers/all-MiniLM-L6-v2" (fast, 384-dim)
+  #   - "sentence-transformers/all-mpnet-base-v2" (better quality, 768-dim)
+  #   - "sentence-transformers/all-distilroberta-v1" (384-dim)
+  model_name: "sentence-transformers/all-MiniLM-L6-v2"
+  
+  # Batch size for encoding
+  # Higher = faster but more memory. Reduce if OOM errors occur.
+  batch_size: 64
+  
+  # Maximum sequence length for model input
+  max_seq_length: 128
+  
+  # Embedding dimension (output of model)
+  # For all-MiniLM-L6-v2: 384
+  # For all-mpnet-base-v2: 768
+  embedding_dim: 384
+  
+  # Normalize embeddings to unit length
+  normalize_embeddings: true
+  
+  # FAISS index type
+  # Valid values: "IndexFlatIP", "IndexIVFFlat", "IndexHNSW"
+  faiss_index_type: "IndexFlatIP"
+  
+  # Cache directory for embeddings
+  cache_dir: "cache/embeddings"
+  
+  # Cache file name
+  cache_file: "dense_product_embeddings.npz"
+
+
+# =============================================================================
+# SPLADE SEARCH CONFIGURATION
+# =============================================================================
+
+splade:
+  # Enable/disable SPLADE
+  enabled: true
+  
+  # Default SPLADE variant to use
+  # Valid values: "prithivi", "qdrant_esci", "naver"
+  default_model: "prithivi"
+  
+  # SPLADE model configurations (pre-defined variants)
+  models:
+    prithivi:
+      # prithivida/Splade_PP_en_v2 - General purpose, Apache 2.0
+      enabled: true
+      model_name: "prithivida/Splade_PP_en_v2"
+      use_sparse_encoder: false
+      label: "SPLADE (Prithivi)"
+      cache_dir: "cache/splade/prithivi"
+    
+    qdrant_esci:
+      # Tuned on Amazon ESCI dataset - best for e-commerce
+      enabled: true
+      model_name: "thierrydamiba/splade-ecommerce-esci"
+      use_sparse_encoder: true
+      label: "SPLADE (Qdrant ESCI)"
+      cache_dir: "cache/splade/qdrant_esci"
+    
+    naver:
+      # Ensemble distilled model - balanced quality/speed
+      enabled: true
+      model_name: "naver/splade-cocondenser-ensembledistil"
+      use_sparse_encoder: true
+      label: "SPLADE (Naver)"
+      cache_dir: "cache/splade/naver"
+  
+  # Batch size for encoding
+  batch_size: 32
+  
+  # Maximum sequence length
+  max_seq_length: 256
+  
+  # BERT vocabulary size (for sparse vector dimension)
+  vocab_size: 30522
+  
+  # Number of top expansion tokens to visualize
+  top_k_expansion_tokens: 20
+
+
+# =============================================================================
+# HYBRID SEARCH CONFIGURATION
+# =============================================================================
+
+hybrid:
+  # Reciprocal Rank Fusion (RRF) parameter
+  # Typical values: 40-100 (higher = smoother distribution)
+  rrf_k: 60
+  
+  # Fusion method
+  # Valid values: "rrf", "weighted"
+  fusion_method: "weighted"
+  
+  # Weights for each method (must sum to 1.0)
+  # Adjust based on your use case:
+  #   E-commerce: boost SPLADE for term matching
+  #   Semantic: boost dense for meaning
+  weights:
+    bm25: 0.3
+    splade: 0.4
+    dense: 0.3
+  
+  # Number of top-K results per method before fusion
+  retrieval_top_k: 100
+
+
+# =============================================================================
+# EVALUATION CONFIGURATION
+# =============================================================================
+
+evaluation:
+  # NDCG evaluation points (k-values)
+  ndcg_k: [10, 20, 50]
+  
+  # Relevance grades for ESCI labels
+  # E=Exact, S=Substitute, C=Complement, I=Irrelevant
+  gains:
+    E: 3
+    S: 2
+    C: 1
+    I: 0
+  
+  # Labels considered "positive" (relevant)
+  positive_labels: ["E", "S", "C"]
+  
+  # Labels considered "negative" (irrelevant)
+  negative_labels: ["I"]
+  
+  # Maximum points per label for plotting (for speed)
+  max_points_per_label: 50000
+  
+  # Output file for results
+  results_file: "results/hybrid_search_results.json"
+  
+  # Output file for comparison
+  comparison_csv: "results/method_comparison.csv"
+
+
+# =============================================================================
+# RUNTIME CONFIGURATION
+# =============================================================================
+
+runtime:
+  # Compute device
+  # Valid values: "cuda", "cpu"
+  device: "cuda"
+  
+  # Number of worker processes for data loading
+  num_workers: 4
+  
+  # Random seed for reproducibility
+  seed: 42
+  
+  # Verbosity level
+  # Valid values: "DEBUG", "INFO", "WARNING", "ERROR"
+  log_level: "INFO"
+  
+  # Whether to create cache directories if missing
+  auto_create_dirs: true

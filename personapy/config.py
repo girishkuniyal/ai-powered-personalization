@@ -1,13 +1,21 @@
 """
-Configuration for Appendix: Hybrid Search with Vector Databases.
+Centralized configuration for PersonaLity hybrid search.
 
-Follows the dataclass-based config pattern from Chapters 10 and 11.
-All paths, model settings, and hyperparameters are centralized here.
+Organized into three sections:
+  1. Path Configuration - directories and file paths
+  2. Constants - domain-specific constants (ESCI labels, colors)
+  3. Dataclasses - modular configuration objects for each component
+
+Example usage:
+  from personapy.config import ESCIDataConfig, BM25Config, DenseConfig
+  
+  data_cfg = ESCIDataConfig()
+  bm25_cfg = BM25Config()
 """
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Dict, List, Any
 import logging
 
 logger = logging.getLogger(__name__)

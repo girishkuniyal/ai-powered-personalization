@@ -58,3 +58,42 @@ If you are a reviewer, please use Pull Requests or Issues to suggest changes. I 
 3. Engineering manager/leader from another ML/AI domain who lead or about to lead ML teams that develop these Recommendations use cases -> to see if my chapters around the enterprise adoption resonate.
 
 If you'd like early access to the chapters, please email me directly or open a request.
+
+---
+
+## 📦 PersonaLity Package
+
+A unified hybrid search client supporting BM25 (sparse lexical), Dense (semantic embeddings), SPLADE (learned sparse), and Hybrid (fusion) search methods for building retrieval-stage components.
+
+### Quick Start
+
+```bash
+# Install package
+pip install -e .
+
+# See comprehensive guide
+cat personapy/GUIDE.md
+
+# Run commands
+personapy bm25 index
+personapy dense encode --device cuda
+personapy splade encode --splade-model qdrant_esci
+personapy hybrid evaluate
+```
+
+### Complete Documentation
+
+See [**personapy/GUIDE.md**](personapy/GUIDE.md) for:
+- Installation & configuration
+- All CLI commands & parameters
+- Configuration reference (all fields with valid values)
+- Usage examples
+- Programmatic API
+- Troubleshooting
+
+### Configuration
+
+- Copy default config: `cp config.yaml.default config.yaml`
+- Edit `config.yaml` for batch configuration
+- Or use CLI arguments: `personapy dense encode --device cuda`
+- See [personapy/GUIDE.md](personapy/GUIDE.md) for all options
